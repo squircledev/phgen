@@ -1,6 +1,5 @@
 global.__phgen_sprite_cache = ds_map_create();
 global.__phgen_string_cache = ds_map_create();
-global.__phgen_sprite_origin_relative = [0, 0];
 
 /// @function phgen_rectangle()
 /// @param width=16
@@ -8,6 +7,8 @@ global.__phgen_sprite_origin_relative = [0, 0];
 /// @param color=c_white
 /// @param outline_thickness=1
 /// @param outline_color=color
+/// @param x_origin_relative=0
+/// @param y_origin_relative=0
 /// @returns sprite_index
 function phgen_rectangle()
 {
@@ -16,6 +17,8 @@ function phgen_rectangle()
 	var _color = (argument_count > 2) ? argument[2] : c_white;
 	var _outline_thickness = (argument_count > 3) ? argument[3] : 1;
 	var _outline_color = (argument_count > 4) ? argument[4] : _color;
+	var _x_origin = (argument_count > 5) ? _width * argument[5] : 0;
+	var _y_origin = (argument_count > 6) ? _height * argument[6] : 0;
 	
 	var _map_string = __phgen_map_string("sprRect", _width, _height, _color, _outline_thickness, _outline_color);
 	var _map_value = ds_map_find_value(global.__phgen_sprite_cache, _map_string);
@@ -29,7 +32,7 @@ function phgen_rectangle()
 	draw_clear_alpha(_outline_color, 1.0);
 	draw_rectangle_color(x + _outline_thickness, y +  _outline_thickness, _width -  _outline_thickness, _height -  _outline_thickness, _color, _color, _color, _color, false);
 	surface_reset_target();
-	var _spr = sprite_create_from_surface(_surf, 0, 0, _width, _height, false, false, _width*global.__phgen_sprite_origin_relative[0], _height*global.__phgen_sprite_origin_relative[1]);
+	var _spr = sprite_create_from_surface(_surf, 0, 0, _width, _height, false, false, _x_origin, _y_origin);
 	ds_map_set(global.__phgen_sprite_cache, _map_string, _spr);
 	return _spr;
 }
@@ -39,6 +42,8 @@ function phgen_rectangle()
 /// @param color=c_white
 /// @param outline_thickness=1
 /// @param outline_color=color
+/// @param x_origin_relative=0
+/// @param y_origin_relative=0
 /// @returns sprite_index
 function phgen_square()
 {
@@ -47,15 +52,19 @@ function phgen_square()
 	var _color = (argument_count > 1) ? argument[1] : c_white;
 	var _outline_thickness = (argument_count > 2) ? argument[2] : 1;
 	var _outline_color = (argument_count > 3) ? argument[3] : _color;
+	var _x_origin = (argument_count > 4) ? _width * argument[4] : 0;
+	var _y_origin = (argument_count > 5) ? _height * argument[5] : 0;
 	
-	return phgen_rectangle(_width, _height, _color, _outline_thickness, _outline_color);
+	return phgen_rectangle(_width, _height, _color, _outline_thickness, _outline_color, _x_origin, _y_origin);
 }
 
-/// @function phgen_circle(radius, color, outline_size, outline_color)
+/// @function phgen_circle()
 /// @param radius=8
 /// @param color=c_white
 /// @param outline_size=1
 /// @param outline_color=color
+/// @param x_origin_relative=0
+/// @param y_origin_relative=0
 /// @returns sprite_index
 function phgen_circle()
 {
@@ -63,6 +72,8 @@ function phgen_circle()
 	var _color = (argument_count > 1) ? argument[1] : c_white;
 	var _outline_thickness = (argument_count > 2) ? argument[2] : 1;
 	var _outline_color = (argument_count > 3) ? argument[3] : _color;
+	var _x_origin = (argument_count > 4) ? _radius * 2 * argument[4] : 0;
+	var _y_origin = (argument_count > 5) ? _radius * 2 * argument[5] : 0;
 	
 	var _map_string = __phgen_map_string("sprCircle", _radius, _color, _outline_thickness, _outline_color);
 	var _map_value = ds_map_find_value(global.__phgen_sprite_cache, _map_string);
@@ -81,20 +92,9 @@ function phgen_circle()
 	draw_circle(_radius, _radius, _radius-_outline_thickness, false);
 	surface_reset_target();
 	draw_set_color(_prev_color);
-	var _spr = sprite_create_from_surface(_surf, 0, 0, _radius * 2, _radius * 2, false, false,  _radius*2*global.__phgen_sprite_origin_relative[0],_radius*2*global.__phgen_sprite_origin_relative[1]);
+	var _spr = sprite_create_from_surface(_surf, 0, 0, _radius * 2, _radius * 2, false, false,  _x_origin, _y_origin);
 	ds_map_set(global.__phgen_sprite_cache, _map_string, _spr);
 	return _spr;
-}
-
-/// @function phgen_set_default_relative_origin(x_origin, y_origin)
-/// @description Sets the relative origin of all newly made sprites (0,0 is top left, 1,1 is bottom right)
-/// @param x_origin
-/// @param y_origin
-/// @returns void
-function phgen_set_default_relative_origin(_x_origin, _y_origin)
-{
-	global.__phgen_sprite_origin_relative[0] = _x_origin;
-	global.__phgen_sprite_origin_relative[1] = _y_origin;
 }
 
 /// @function phgen_word()
