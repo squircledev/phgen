@@ -12,6 +12,8 @@ global.__phgen_string_cache = ds_map_create();
 /// @returns sprite_index
 function phgen_rectangle()
 {
+	__phgen_map_check();
+	
 	var _width = (argument_count > 0) ? argument[0] : 16;
 	var _height = (argument_count > 1) ? argument[1] : 16;
 	var _color = (argument_count > 2) ? argument[2] : c_white;
@@ -47,6 +49,8 @@ function phgen_rectangle()
 /// @returns sprite_index
 function phgen_square()
 {
+	__phgen_map_check();
+	
 	var _width = (argument_count > 0) ? argument[0] : 16;
 	var _height = (argument_count > 0) ? argument[0] : 16;
 	var _color = (argument_count > 1) ? argument[1] : c_white;
@@ -68,6 +72,8 @@ function phgen_square()
 /// @returns sprite_index
 function phgen_circle()
 {
+	__phgen_map_check();
+	
 	var _radius = (argument_count > 0) ? argument[0] : 8;
 	var _color = (argument_count > 1) ? argument[1] : c_white;
 	var _outline_thickness = (argument_count > 2) ? argument[2] : 1;
@@ -102,6 +108,8 @@ function phgen_circle()
 /// @returns string
 function phgen_word()
 {
+	__phgen_map_check();
+	
 	var _length = (argument_count > 0) ? argument[0] : 6;
 	
 	var _map_string = __phgen_map_string("strWord", _length);
@@ -128,6 +136,8 @@ function phgen_word()
 /// @returns string
 function phgen_sentence()
 {
+	__phgen_map_check();
+	
 	var _character_count = (argument_count > 0) ? argument[0] : 20;
 	var _punctuation = (argument_count > 1) ? argument[1] : true;
 	var _word_length_min = (argument_count > 2) ? argument[2] : 3;
@@ -179,6 +189,8 @@ function phgen_sentence()
 /// @param sprite_index
 function phgen_cache_remove_sprite(_sprite_index)
 {
+	__phgen_map_check();
+	
 	var _keys = ds_map_keys_to_array(global.__phgen_sprite_cache);
 	var _found_key = undefined;
 	for(var i = 0; i < array_length(_keys); i++)
@@ -189,8 +201,14 @@ function phgen_cache_remove_sprite(_sprite_index)
 			break;
 		}
 	}
-	sprite_delete(_sprite_index);
-	ds_map_delete(global.__phgen_sprite_cache, _found_key);
+	if(sprite_exists(_sprite_index))
+	{
+		sprite_delete(_sprite_index);
+	}
+	if(_found_key != undefined)
+	{
+		ds_map_delete(global.__phgen_sprite_cache, _found_key);
+	}
 }
 
 /// @function phgen_cache_remove_string(string)
@@ -198,6 +216,8 @@ function phgen_cache_remove_sprite(_sprite_index)
 /// @param string
 function phgen_cache_remove_string(_string)
 {
+	__phgen_map_check();
+	
 	var _keys = ds_map_keys_to_array(global.__phgen_string_cache);
 	var _found_key = undefined;
 	for(var i = 0; i < array_length(_keys); i++)
@@ -208,7 +228,34 @@ function phgen_cache_remove_string(_string)
 			break;
 		}
 	}
-	ds_map_delete(global.__phgen_string_cache, _found_key);
+	if(_found_key != undefined)
+	{
+		ds_map_delete(global.__phgen_string_cache, _found_key);
+	}
+}
+
+function phgen_cache_clear()
+{
+	__phgen_map_check();
+	var _keys = ds_map_keys_to_array(global.__phgen_sprite_cache);
+	for(var i = 0; i < array_length(_keys); i++)
+	{
+		sprite_delete(ds_map_find_value(global.__phgen_sprite_cache, _keys[i]));
+	}
+	ds_map_clear(global.__phgen_sprite_cache);
+	ds_map_clear(global.__phgen_string_cache);
+}
+
+function __phgen_map_check()
+{
+	if(ds_exists(global.__phgen_sprite_cache, ds_type_map) == false)
+	{
+		global.__phgen_sprite_cache = ds_map_create();
+	}
+	if(ds_exists(global.__phgen_string_cache, ds_type_map) == false)
+	{
+		global.__phgen_string_cache = ds_map_create();
+	}
 }
 
 /// @param ...values

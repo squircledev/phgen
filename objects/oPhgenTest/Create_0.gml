@@ -1,1 +1,1 @@
-phgen_set_default_relative_origin(0, 0);
+randomize();
