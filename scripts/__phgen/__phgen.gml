@@ -2,11 +2,13 @@ global.__phgen_sprite_cache = ds_map_create();
 global.__phgen_string_cache = ds_map_create();
 global.__phgen_sprite_origin_relative = [0, 0];
 
-/// @param ?width
-/// @param ?height
-/// @param ?color
-/// @param ?outline_thickness
-/// @param ?outline_color
+/// @function phgen_rectangle()
+/// @param width=16
+/// @param height=16
+/// @param color=c_white
+/// @param outline_thickness=1
+/// @param outline_color=color
+/// @returns sprite_index
 function phgen_rectangle()
 {
 	var _width = (argument_count > 0) ? argument[0] : 16;
@@ -32,10 +34,12 @@ function phgen_rectangle()
 	return _spr;
 }
 
-/// @param ?size
-/// @param ?color
-/// @param ?outline_thickness
-/// @param ?outline_color
+/// @function phgen_square()
+/// @param size=16
+/// @param color=c_white
+/// @param outline_thickness=1
+/// @param outline_color=color
+/// @returns sprite_index
 function phgen_square()
 {
 	var _width = (argument_count > 0) ? argument[0] : 16;
@@ -43,13 +47,16 @@ function phgen_square()
 	var _color = (argument_count > 1) ? argument[1] : c_white;
 	var _outline_thickness = (argument_count > 2) ? argument[2] : 1;
 	var _outline_color = (argument_count > 3) ? argument[3] : _color;
+	
 	return phgen_rectangle(_width, _height, _color, _outline_thickness, _outline_color);
 }
 
-/// @param ?radius
-/// @param ?color
-/// @param ?outline_size
-/// @param ?outline_color
+/// @function phgen_circle(radius, color, outline_size, outline_color)
+/// @param radius=8
+/// @param color=c_white
+/// @param outline_size=1
+/// @param outline_color=color
+/// @returns sprite_index
 function phgen_circle()
 {
 	var _radius = (argument_count > 0) ? argument[0] : 8;
@@ -79,51 +86,23 @@ function phgen_circle()
 	return _spr;
 }
 
-/*
-/// @param ?width
-/// @param ?height
-/// @param ?color
-/// @param ?outline_size
-/// @param ?outline_color
-function phgen_triangle()
-{
-	var _width = (argument_count > 0) ? argument[0] : 16;
-	var _height = (argument_count > 1) ? argument[1] : 16;
-	var _color = (argument_count > 2) ? argument[2] : c_white;
-	var _outline_thickness = (argument_count > 3) ? argument[3] : 1;
-	var _outline_color = (argument_count > 4) ? argument[4] : _color;
-	
-	var _map_string = __phgen_map_string("sprRect", _width, _height, _color, _outline_thickness, _outline_color);
-	var _map_value = ds_map_find_value(global.__phgen_cache, _map_string);
-	if(_map_value != undefined)
-	{
-		return _map_value;
-	}
-	
-	var _surf = surface_create(_width, _height);
-	surface_set_target(_surf);
-	draw_clear_alpha(_outline_color, 1.0);
-	draw_rectangle_color(x + _outline_thickness, y +  _outline_thickness, _width -  _outline_thickness, _height -  _outline_thickness, _color, _color, _color, _color, false);
-	surface_reset_target();
-	var _spr = sprite_create_from_surface(_surf, 0, 0, _width, _height, false, false, _width*global.__phgen_sprite_origin_relative[0], _height*global.__phgen_sprite_origin_relative[1]);
-	ds_map_set(global.__phgen_cache, _map_string, _spr);
-	return _spr;
-}
-*/
-
+/// @function phgen_set_default_relative_origin(x_origin, y_origin)
 /// @description Sets the relative origin of all newly made sprites (0,0 is top left, 1,1 is bottom right)
 /// @param x_origin
 /// @param y_origin
+/// @returns void
 function phgen_set_default_relative_origin(_x_origin, _y_origin)
 {
 	global.__phgen_sprite_origin_relative[0] = _x_origin;
 	global.__phgen_sprite_origin_relative[1] = _y_origin;
 }
 
-/// @param ?length
-function phgen_word(_length)
+/// @function phgen_word()
+/// @param length=6
+/// @returns string
+function phgen_word()
 {
-	if (_length == undefined) _length = 6;
+	var _length = (argument_count > 0) ? argument[0] : 6;
 	
 	var _map_string = __phgen_map_string("strWord", _length);
 	var _map_value = ds_map_find_value(global.__phgen_string_cache, _map_string);
@@ -141,16 +120,18 @@ function phgen_word(_length)
 	return _s;
 }
 
-/// @param ?character_count
-/// @param ?punctuation
-/// @param ?word_length_min
-/// @param ?word_length_max
-function phgen_sentence(_character_count, _punctuation, _word_length_min, _word_length_max)
+/// @function phgen_sentence(character_count, punctuation,_word_length_min, word_length_max)
+/// @param character_count=20
+/// @param punctuation=true
+/// @param word_length_min=3
+/// @param word_length_max=10
+/// @returns string
+function phgen_sentence()
 {
-	if (_character_count == undefined) _character_count = 20;
-	if (_punctuation == undefined) _punctuation = true;
-	if (_word_length_min == undefined) _word_length_min = 3;
-	if (_word_length_max == undefined) _word_length_max = 10;
+	var _character_count = (argument_count > 0) ? argument[0] : 20;
+	var _punctuation = (argument_count > 1) ? argument[1] : true;
+	var _word_length_min = (argument_count > 2) ? argument[2] : 3;
+	var _word_length_max = (argument_count > 3) ? argument[3] : 10;
 	
 	var _map_string = __phgen_map_string("strSentence", _character_count, _punctuation, _word_length_min, _word_length_max);
 	var _map_value = ds_map_find_value(global.__phgen_string_cache, _map_string);
@@ -193,6 +174,7 @@ function phgen_sentence(_character_count, _punctuation, _word_length_min, _word_
 	return _s;
 }
 
+/// @function phgen_cache_remove_sprite(sprite_index)
 /// @description Removes generated sprite from the cache, but this is costly so dont do it too often... but it's also placeholder stuff so who cares really?
 /// @param sprite_index
 function phgen_cache_remove_sprite(_sprite_index)
@@ -211,6 +193,7 @@ function phgen_cache_remove_sprite(_sprite_index)
 	ds_map_delete(global.__phgen_sprite_cache, _found_key);
 }
 
+/// @function phgen_cache_remove_string(string)
 /// @description Removes generated string from the cache, but this is costly so dont do it too often... but it's also placeholder stuff so who cares really?
 /// @param string
 function phgen_cache_remove_string(_string)
