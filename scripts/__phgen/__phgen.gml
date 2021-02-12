@@ -32,7 +32,7 @@ function phgen_rectangle()
 	var _surf = surface_create(_width, _height);
 	surface_set_target(_surf);
 	draw_clear_alpha(_outline_color, 1.0);
-	draw_rectangle_color(x + _outline_thickness, y +  _outline_thickness, _width -  _outline_thickness, _height -  _outline_thickness, _color, _color, _color, _color, false);
+	draw_rectangle_color(0 + _outline_thickness, 0 +  _outline_thickness, _width -  _outline_thickness, _height -  _outline_thickness, _color, _color, _color, _color, false);
 	surface_reset_target();
 	var _spr = sprite_create_from_surface(_surf, 0, 0, _width, _height, false, false, _x_origin, _y_origin);
 	ds_map_set(global.__phgen_sprite_cache, _map_string, _spr);
