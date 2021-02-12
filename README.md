@@ -9,7 +9,7 @@ This script will generate cached sprites and strings for you. As long as you use
 
 ## Sprites
 
-phgen_rectangle (and the other sprite generators) generate a sprite_index. Please see the wiki for a full list of arguments.
+phgen_rectangle (and the other sprite generators) generate a sprite_index.
 
 ``draw_sprite(phgen_rectangle(), 0, 0, 0);``
 
@@ -17,12 +17,12 @@ The above code will draw a default rectangle sprite it generates, and then on al
 
 ## Strings
 
-phgen_word and phgen_sentence generate cached strings for you. Please see the wiki for a full list of arguments.
+phgen_word and phgen_sentence generate cached strings for you. 
 
 ``draw_text(0, 0, phgen_sentence());``
 
 As long as you use the same settings, the sentence will stay the same. If you want the sentence to change, do this:
 
-``phgen_cache_remove_string(phgen_sentence();``
+``phgen_cache_remove_string(phgen_sentence());``
 
 This will clear the cache of that string and generate a new one next time you call the string generator function with the same settings.
